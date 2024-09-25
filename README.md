@@ -1,13 +1,6 @@
 # Dimension-Reduction-using-PCA-and-LDA
 Applied PCA and LDA on the Breast Cancer dataset and used a Random Forest Classifier to classify cancer as benign or malignant. Achieved the best results with the PCA & Random Forest model combination.
-Data Correlation and Dimensionality Reduction
-As observed, multicollinearity is present in the dataset. For example, the radius_mean column is highly correlated with both perimeter_mean and area_mean (correlation = 1). This suggests these columns contain similar information, so it’s better to retain only one. In the final visualization, variables with correlations above 90% were removed. Given the strong correlation and the large number of variables, dimensionality reduction techniques like PCA and LDA can be applied.
-
-Feature Selection and Classification
-Feature Selection: We first apply a forward selection algorithm to choose features. The verbose=2 setting allows us to observe the red outputs, and cross-validation (cv=5) splits the data into five parts, using four for training and one for testing, calculating accuracy for each test fold. We use all 30 variables and add them one by one. The accuracy plateaus after the third variable, so we stop feature selection at the second variable, as the model’s accuracy is already high. The stopping criterion is when adding new variables no longer improves the model, which happens after the 8th variable.
-
-PCA: We standardize the data to eliminate scale dependencies and apply PCA. A plot is generated showing the variance explained by each principal component. It reveals that most of the variance is captured by the first component, and minimal information is gained from additional components. We proceed with one or two principal components depending on the required accuracy. A two-component model shows a clear separation between cancerous and healthy patients.
-
-LDA and Classification: We apply LDA with one component, followed by a Random Forest classifier. A performance report confirms that the model combining LDA with Random Forest performs best. The standalone Random Forest, without dimensionality reduction, is the least effective. Interestingly, the forward selection approach, which uses only two features, achieves similar recall as the LDA-augmented model.
-
-Given the dataset’s focus on health and cancer, achieving high model accuracy is crucial. Using two variables yields a recall of 84% and precision of 92%. Although LDA was expected to perform better in a supervised setting, hyperparameter tuning significantly influences Random Forest’s accuracy, possibly explaining its slight underperformance compared to PCA.
+The dataset shows multicollinearity, with variables like radius_mean, perimeter_mean, and area_mean being highly correlated. We reduce dimensions by removing highly correlated variables and applying PCA or LDA.
+Feature Selection: Using forward selection, we add variables to the model one by one. Accuracy plateaus after the second feature, so we stop, achieving 94% accuracy with just two features.
+PCA: After standardizing the data, PCA shows that most variance is explained by the first component, but two components provide clear separation between cancerous and healthy patients.
+LDA and Classification: LDA combined with a Random Forest classifier gives the best performance. The forward selection approach also performs well with two features, making it a viable option.
