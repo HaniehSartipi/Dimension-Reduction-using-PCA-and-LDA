@@ -1,0 +1,174 @@
+import pandas as pd
+import numpy as np
+
+df=pd.read_csv('E:/Master/machine learning/exercise/data.csv')
+df.head()
+
+df=df.drop('Unnamed: 32',axis=1)
+df=df.drop('id',axis=1)
+df['diagnosis'].replace('M',1,inplace=True)
+df['diagnosis'].replace('B',0,inplace=True)
+df.head()
+X = df.loc[:, 'radius_mean':'fractal_dimension_worst'].values
+y = df.loc[:, 'diagnosis'].values
+
+from sklearn.model_selection import train_test_split
+Xtrain, Xtest, Ytrain, Ytest =train_test_split(X, y , test_size = 0.2,random_state=100)
+
+print(Xtrain.shape)
+print(Xtest.shape)
+
+from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score, confusion_matrix
+from sklearn.ensemble import RandomForestClassifier
+DT = RandomForestClassifier(max_depth=5, random_state=78 )
+DT.fit(Xtrain, Ytrain)
+pred = DT.predict(Xtest)
+acc = accuracy_score(Ytest, pred)
+#acc=TP+TN/(TP+TN+FP+FN)The accuracy metric computes how many times a model made a correct prediction across the entire dataset.
+rec = recall_score(Ytest, pred)
+#rec=What proportion of actual positives was identified correctly?
+pre = precision_score(Ytest, pred) # pre=TP/(TP+FP)
+conf = confusion_matrix(Ytest, pred)
+print(acc, rec, pre)
+print(conf)
+
+from mlxtend.feature_selection import SequentialFeatureSelector
+from sklearn.ensemble import RandomForestClassifier
+forwardfeature=SequentialFeatureSelector(RandomForestClassifier(max_depth=5,random_state=78),k_features=2,
+                                                 forward=True,
+                                                 floating=False,
+                                                 verbose=2,scoring="recall",
+                                                ).fit(Xtrain,Ytrain)
+
+from mlxtend.feature_selection import SequentialFeatureSelector
+from sklearn.ensemble import RandomForestClassifier
+forwardfeature=SequentialFeatureSelector(RandomForestClassifier(max_depth=5,random_state=78),k_features=2,
+                                                 forward=True,
+                                                 floating=False,
+                                                 verbose=2,scoring="precision",
+                                                ).fit(Xtrain,Ytrain)
+
+pd.DataFrame.from_dict(forwardselectionfeature.get_metric_dict()).T
+
+from sklearn.preprocessing import StandardScaler
+stand=StandardScaler()
+stand.fit(X) 
+scaleddf=stand.transform(X)
+pd.DataFrame(scaleddf).describe()
+
+import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
+pca=PCA().fit(X)
+eigenvalues = (pca.explained_variance_)
+prop_var = eigenvalues / np.sum(eigenvalues)
+plt.figure(figsize=(14,10))
+plt.plot(np.arange(1, len(prop_var)+1), 
+                   prop_var, marker='o',linewidth=3)
+plt.xlabel('Principal Component',
+           size = 20)
+plt.ylabel('Proportion of Variance Explained',
+           size = 20)
+plt.title(' Scree Plot ',
+          size = 25)
+plt.grid(True)
+
+from sklearn.decomposition import PCA
+pca=PCA(n_components=2)
+pca.fit(scaleddf)
+
+xpca=pca.transform(scaleddf)
+scaleddf.shape
+
+xpca.shape #with pca we convert 30 dim to 2 dim
+
+xpca[:2]
+
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+import seaborn as sns
+get_ipython().run_line_magic('matplotlib', 'inline')
+
+h=plt.figure(figsize=(14,9))
+sns.scatterplot(xpca[:,0],xpca[:,1],hue=df['diagnosis'])
+plt.xlabel('First PC')
+plt.ylabel('Second PC')
+
+pca.components_
+
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.decomposition import PCA
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import confusion_matrix
+import matplotlib.pyplot as plt
+
+pipeline= Pipeline([
+    ('scaler',StandardScaler()),
+    ('pca',PCA()),
+    ('clf',RandomForestClassifier(max_depth=5,random_state=78))
+])
+pipeline.fit(Xtrain,Ytrain)
+#n_components == min(n_samples, n_features)
+ypred=pipeline.predict(Xtest)
+cm=confusion_matrix(Ytest,ypred)
+cm
+acc = accuracy_score(Ytest, ypred)
+acc
+
+acc = accuracy_score(Ytest, ypred)
+rec = recall_score(Ytest, ypred)
+pre = precision_score(Ytest, ypred) 
+conf = confusion_matrix(Ytest, ypred)
+print(acc, rec, pre)
+print(conf)
+
+print(classification_report(Ytest,y_pred))
+
+from sklearn.preprocessing import StandardScaler
+
+sc = StandardScaler()
+Xtrain = sc.fit_transform(Xtrain)
+Xtest = sc.transform(Xtest)
+
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+
+lda = LDA(n_components=1)
+Xtrain = lda.fit_transform(Xtrain, Ytrain)
+Xtest = lda.transform(Xtest)
+
+from sklearn.ensemble import RandomForestClassifier
+
+classifier = RandomForestClassifier(max_depth=5, random_state=78)
+
+classifier.fit(Xtrain, Ytrain)
+y_pred = classifier.predict(Xtest)
+
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report
+from sklearn.metrics import accuracy_score
+
+cm = confusion_matrix(Ytest, y_pred)
+print(cm)
+print('Accuracy' + str(accuracy_score(Ytest, y_pred)))
+print(classification_report(Ytest,y_pred))
+
+acc = accuracy_score(Ytest, y_pred)
+#acc=TP+TN/(TP+TN+FP+FN)The accuracy metric computes how many times a model made a correct prediction across the entire dataset.
+rec = recall_score(Ytest, y_pred)
+#rec=What proportion of actual positives was identified correctly?
+pre = precision_score(Ytest, y_pred) # pre=TP/(TP+FP)
+conf = confusion_matrix(Ytest, y_pred)
+print(acc, rec, pre)
+print(conf)
+
+corr = df.corr()
+corr
+
+plt.figure(figsize=(12,10), dpi= 80)
+sns.heatmap(df.iloc[:,1:11].corr(),annot=True,fmt='.1g');
+
+df.drop(columns=['perimeter_mean','area_mean','compactness_mean','concave points_mean','perimeter_se','area_se',
+                'perimeter_se','perimeter_worst','area_worst'],inplace=True)
+plt.figure(figsize=(12,10), dpi= 80)
+sns.heatmap(df.iloc[:,1:].corr(),annot=True,fmt='.1g');
