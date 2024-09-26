@@ -1,5 +1,6 @@
 # Dimension-Reduction-using-PCA-and-LDA
-Applied PCA and LDA on the Breast Cancer dataset and used a Random Forest Classifier to classify cancer as benign or malignant. Achieved the best results with the PCA & Random Forest model combination.
-The dataset shows multicollinearity, with variables like radius_mean, perimeter_mean, and area_mean being highly correlated. 
-Feature Selection: Using forward selection, we add variables to the model one by one. Accuracy plateaus after the second feature, so we stop, achieving 94% accuracy with just two features.
-PCA: After standardizing the data, PCA shows that most variance is explained by the first component, but two components provide clear separation between cancerous and healthy patients.
+In this analysis, I applied Principal Component Analysis (PCA) and Linear Discriminant Analysis (LDA) on the Breast Cancer dataset to classify tumors as benign or malignant. My primary classifier was the Random Forest, which yielded the best performance when combined with PCA.
+The dataset exhibited multicollinearity, particularly among features such as radius_mean, perimeter_mean, and area_mean. This correlation can introduce redundancy and complicate model interpretation.
+I employed forward selection for feature selection, incrementally adding variables to the model. Notably, accuracy plateaued after incorporating the second feature, allowing me to achieve an impressive 94% accuracy using only these two informative features.
+After standardizing the data, PCA analysis revealed that the first principal component captured most of the variance. However, I found that utilizing two principal components provided clear separation between cancerous and healthy patients, enhancing classification performance.
+
